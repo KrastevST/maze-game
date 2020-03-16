@@ -122,7 +122,10 @@ horizontals.forEach((row, rowIndex) => {
       wallWidth,
       { 
         label: 'wall',
-        isStatic: true
+        isStatic: true,
+        render: {
+          fillStyle: 'grey'
+        }
       }
     );
     World.add(world, wall);
@@ -142,7 +145,10 @@ verticals.forEach((row, rowIndex) => {
       cellHeight + wallWidth,
       { 
         label: 'wall',
-        isStatic: true 
+        isStatic: true,
+        render: {
+          fillStyle: 'grey'
+        }
       }
     );
     World.add(world, wall);
@@ -158,7 +164,10 @@ const goal = Bodies.rectangle(
   goalX, goalY, goalSide, goalSide,
   {
     label: 'goal',
-    isStatic: true
+    isStatic: true,
+    render: {
+      fillStyle: 'green'
+    }
   }
 );
 World.add(world, goal);
@@ -176,21 +185,24 @@ World.add(world, ball);
 
 document.addEventListener('keydown', event => {
   const { x, y } = ball.velocity;
+  const maxSpeed = 6;
+  const minSpeed = -maxSpeed;
+  const acceleration = 3;
 
-  if (event.keyCode === 87 || event.keyCode === 38) {
-    Body.setVelocity(ball, { x, y: y - 2 });
+  if ((event.keyCode === 87 || event.keyCode === 38) && y - acceleration > minSpeed) {
+    Body.setVelocity(ball, { x, y: y - acceleration });
   }
 
-  if (event.keyCode === 68 || event.keyCode === 39) {
-    Body.setVelocity(ball, { x: x + 2, y });
+  if ((event.keyCode === 68 || event.keyCode === 39) && x + acceleration < maxSpeed) {
+    Body.setVelocity(ball, { x: x + acceleration, y });
   }
 
-  if (event.keyCode === 83 || event.keyCode === 40) {
-    Body.setVelocity(ball, { x, y: y + 2 });
+  if ((event.keyCode === 83 || event.keyCode === 40) && y + acceleration < maxSpeed) {
+    Body.setVelocity(ball, { x, y: y + acceleration });
   }
 
-  if (event.keyCode === 65 || event.keyCode === 37) {
-    Body.setVelocity(ball, { x: x - 2, y });
+  if ((event.keyCode === 65 || event.keyCode === 37) && x - acceleration > minSpeed) {
+    Body.setVelocity(ball, { x: x - acceleration, y });
   }
 })
 
@@ -204,12 +216,15 @@ Events.on(engine, 'collisionStart', event => {
       labels.includes(collision.bodyA.label) &&
       labels.includes(collision.bodyB.label)
     ) {
+      document.querySelector('.winner').classList.remove('hidden');
       world.gravity.y = 1;
       world.bodies.forEach(body => {
         if (body.label === 'wall') {
           Body.setStatic(body, false)
         }
       });
+
+
     }
   });
 });
