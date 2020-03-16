@@ -1,9 +1,9 @@
 const { Engine, Render, Runner, World, Bodies, Body, Events } = Matter;
 
-const width = 600;
-const height = 600;
-const gridRows = 8;
-const gridCols = 8;
+const width = window.innerWidth;
+const height = window.innerHeight;
+const gridRows = 9;
+const gridCols = 16;
 const border = height / 30;
 const wallWidth = border / 2;
 const cellWidth = width / gridCols;
@@ -26,13 +26,13 @@ Runner.run(Runner.create(), engine);
 
 // Walls
 
-const walls = [
-  Bodies.rectangle(width / 2, 0, width, border, { isStatic: true }),
-  Bodies.rectangle(width / 2, height, width, border, { isStatic: true }),
-  Bodies.rectangle(0, height / 2, border, height, { isStatic: true }),
-  Bodies.rectangle(width, height / 2, border, height, { isStatic: true })
+const outerWalls = [
+  Bodies.rectangle(width / 2, 0, width, border, { isStatic: true }),    // top
+  Bodies.rectangle(width / 2, height, width, border, { isStatic: true }),   //bottom
+  Bodies.rectangle(0, height / 2, border, height, { isStatic: true }),    //left
+  Bodies.rectangle(width, height / 2, border, height, { isStatic: true })   //right
 ];
-World.add(world, walls);
+World.add(world, outerWalls);
 
 // Maze Generation
 
@@ -151,11 +151,11 @@ verticals.forEach((row, rowIndex) => {
 
 // Goal
 
+const goalSide = Math.min(cellWidth, cellHeight) * .6;
+const goalX = width - cellWidth * .525;
+const goalY = height - cellHeight * .525;
 const goal = Bodies.rectangle(
-  width - cellWidth * .525,
-  height - cellHeight * .525,
-  cellWidth * .6,
-  cellHeight * .6,
+  goalX, goalY, goalSide, goalSide,
   {
     label: 'goal',
     isStatic: true
@@ -165,10 +165,11 @@ World.add(world, goal);
 
 // Ball
 
+const ballRadius = Math.min(cellHeight, cellWidth) / 3;
+const ballX = cellWidth / 2;
+const ballY = cellHeight / 2;
 const ball = Bodies.circle(
-  cellWidth / 2,
-  cellHeight / 2,
-  Math.min(cellHeight, cellWidth) / 3,
+  ballX, ballY, ballRadius,
   { label: 'ball' }
 );
 World.add(world, ball);
