@@ -2,12 +2,12 @@ const {Engine, Render, Runner, World, Bodies} = Matter;
 
 const width = 600;
 const height = 600;
-const border = 40;
 const gridRows = 8;
 const gridCols = 8;
+const border = height / 20;
+const wallWidth = border / 4;
 const cellWidth = width / gridCols;
 const cellHeight = height / gridRows;
-const wallWidth = 10;
 
 const engine = Engine.create();
 const {world} = engine;
@@ -140,3 +140,15 @@ verticals.forEach((row, rowIndex)  => {
     World.add(world, wall);
   });
 });
+
+const goal = Bodies.rectangle(
+  width - cellWidth / 2 - wallWidth / 2,
+  height - cellHeight / 2 - wallWidth / 2,
+  cellWidth * .5,
+  cellHeight * .5,
+  {
+    isStatic: true,
+
+  }
+);
+World.add(world, goal);
