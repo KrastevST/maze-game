@@ -120,7 +120,10 @@ horizontals.forEach((row, rowIndex) => {
       rowIndex * cellHeight + cellHeight,
       cellWidth + wallWidth,
       wallWidth,
-      { isStatic: true }
+      { 
+        label: 'wall',
+        isStatic: true
+      }
     );
     World.add(world, wall);
   });
@@ -137,7 +140,10 @@ verticals.forEach((row, rowIndex) => {
       rowIndex * cellHeight + cellHeight / 2,
       wallWidth,
       cellHeight + wallWidth,
-      { isStatic: true }
+      { 
+        label: 'wall',
+        isStatic: true 
+      }
     );
     World.add(world, wall);
   });
@@ -163,7 +169,7 @@ const ball = Bodies.circle(
   cellWidth / 2,
   cellHeight / 2,
   Math.min(cellHeight, cellWidth) / 3,
-  { label: 'ball'}
+  { label: 'ball' }
 );
 World.add(world, ball);
 
@@ -191,6 +197,18 @@ document.addEventListener('keydown', event => {
 
 Events.on(engine, 'collisionStart', event => {
   event.pairs.forEach((collision) => {
-    console.log(collision);
+    const labels = ['ball', 'goal'];
+
+    if (
+      labels.includes(collision.bodyA.label) &&
+      labels.includes(collision.bodyB.label)
+    ) {
+      world.gravity.y = 1;
+      world.bodies.forEach(body => {
+        if (body.label === 'wall') {
+          Body.setStatic(body, false)
+        }
+      });
+    }
   });
 });
